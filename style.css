@@ -1,0 +1,26 @@
+ul{
+	list-style-type: none;
+	border: 1px solid red;
+	overflow: auto;
+	
+	
+	
+}
+
+li{
+	float: left;
+	
+
+	padding: 20px;
+}
+
+.underline{
+
+	background-color: red;
+}
+
+li:hover{
+	background-color: seagreen;
+	transition-property: background-color;
+	transition-duration: 1s;
+}
