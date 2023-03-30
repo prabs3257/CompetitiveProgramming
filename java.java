@@ -1,0 +1,1 @@
+class ThreadDemo implements Runnable { public void run() { System.out.println(" running run"); } public void start() { System.out.print(" running start"); }}class MainClass { public static void main(String args[]){ System.out.print("Main Class "); ThreadDemo thr = new ThreadDemo(); thr.start(); }}

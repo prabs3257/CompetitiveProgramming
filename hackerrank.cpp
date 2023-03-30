@@ -1,118 +1,83 @@
-#include<bits/stdc++.h>
+/* Following program is a C++ implementation of Rabin Karp
+Algorithm given in the CLRS book */
+#include <bits/stdc++.h>
 using namespace std;
-#define loop(i,n) for(int i=0;i<n;i++)
-#define ll long long
-#define si(x)	scanf("%d",&x)
-#define sl(x)	scanf("%lld",&x)
-#define ss(s)	scanf("%s",s)
-#define pi(x)	printf("%d\n",x)
-#define pl(x)	printf("%lld\n",x)
-#define ps(s)	printf("%s\n",s)
-#define pb push_back
-#define mp make_pair
-#define f first
-#define s second
-#define min3(a, b, c) min(c, min(a, b))
-#define min4(a, b, c, d) min(d, min(c, min(a, b)))
-#define revloop(i, n) for(int i=n-1;i>=0;i--)
-#define PI 3.1415926535897932384626
-typedef pair<int, int>	pii;
-typedef pair<ll, ll>	pl;
-typedef vector<int>		vi;
-typedef vector<ll>		vl;
-typedef vector<pii>		vpii;
-typedef vector<pl>		vpl;
-typedef vector<vi>		vvi;
-typedef vector<vl>		vvl;
-bool isPrime(int n);
 
-//=======================
+// d is the number of characters in the input alphabet
+#define d 256
 
+/* pat -> pattern
+	txt -> text
+	q -> A prime number
+*/
+void search(char pat[], char txt[], int q)
+{
+	int M = strlen(pat);
+	int N = strlen(txt);
+	int i, j;
+	int p = 0; // hash value for pattern
+	int t = 0; // hash value for txt
+	int h = 1;
 
-int main() {
-    ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	// The value of h would be "pow(d, M-1)%q"
+	for (i = 0; i < M - 1; i++)
+		h = (h * d) % q;
 
-   
-    int ans = 0;
-    int n = 0;
-   // cin>>n;
+	// Calculate the hash value of pattern and first
+	// window of text
+	for (i = 0; i < M; i++) {
+		p = (d * p + pat[i]) % q;
+		t = (d * t + txt[i]) % q;
+	}
 
-    int n = stickers.size()
-    unordered_map<char,int> mpp[n];
-   // string stickers[n];
-    loop(i,n){
+	// Slide the pattern over text one by one
+	for (i = 0; i <= N - M; i++) {
 
-       
-        //cin>>stickers[i];
+		// Check the hash values of current window of text
+		// and pattern. If the hash values match then only
+		// check for characters one by one
+		if (p == t) {
+			/* Check for characters one by one */
+			for (j = 0; j < M; j++) {
+				if (txt[i + j] != pat[j]) {
+					break;
+				}
+			}
 
-        loop(j,stickers[i].length()){
-            mpp[i][stickers[i][j]] = 0;
-        }
+			// if p == t and pat[0...M-1] = txt[i, i+1,
+			// ...i+M-1]
 
-    }
+			if (j == M)
+				cout << "Pattern found at index " << i
+					<< endl;
+		}
 
-    // string wording;
+		// Calculate hash value for next window of text:
+		// Remove leading digit, add trailing digit
+		if (i < N - M) {
+			t = (d * (t - txt[i] * h) + txt[i + M]) % q;
 
-    // cin>>wording;
-
-    bool found = true;
-    loop(i,target.length()){
-
-        bool isThere = false;
-        loop(j,n){
-
-
-            if(mpp[j].find(target[i]) != mpp[j].end()){
-
-                if(mpp[j][target[i]] > 0){
-                    isThere = true;
-                    mpp[j][target[i]]--;
-                    break;
-                }else if(mpp[j][target[i]] == 0){
-                    isThere = true;
-                    ans++;
-                    loop(k,stickers[j].length()){
-                        mpp[j][stickers[j][k]]++;
-                    }
-                    break;
-                }
-
-            }else {
-                isThere = false;
-            }
-
-            
-        }
-        if(isThere == false){
-                found = false;
-                cout<<"-1"<<"\n";
-                break;
-            }
-        
-    }
-
-    if(found == true){
-        cout<<ans<<"\n";
-    }
-
-    // loop(i,n){
-    //     for(auto it : mpp[i]) {
-	// 	cout << it.first << " " << it.second << endl; 
-	// }
-    // cout<<endl;
-    // }
-
-    return 0;
+			// We might get negative value of t, converting
+			// it to positive
+			if (t < 0)
+				t = (t + q);
+		}
+	}
 }
 
+/* Driver code */
+int main()
+{
+	char txt[] = "GEEKS FOR GEEKS";
+	char pat[] = "GEEK";
 
+	// we mod to avoid overflowing of value but we should
+	// take as big q as possible to avoid the collison
+	int q = INT_MAX;
 
-
-bool isPrime(int n){
-  if(n==1) return false;
-  if(n==2) return true;
-  for(int i=2;i*i<=n;i++){
-    if(n%i==0)return false;
-  }
-  return true;
+	// Function Call
+	search(pat, txt, q);
+	return 0;
 }
+
+// This is code is contributed by rathbhupendra
